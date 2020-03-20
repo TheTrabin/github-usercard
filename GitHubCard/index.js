@@ -11,7 +11,7 @@ axios.get("https://api.github.com/users/TheTrabin")
 })
 
 .catch(function(error) {
-  console.log(error);
+  console.log(error)
 })
 
 
@@ -52,13 +52,22 @@ followersArray.forEach(element => {
     
 })})
 
-axios.get(`https://api.github.com/users/TheTrabin/followers`)
+    axios.get('https://api.github.com/users/TheTrabin/followers')
     .then(response => {
-    console.log(response.data)
-    response.data.map((obj) => {
-    entryPoint.appendChild(gitHubCard(obj))})}) 
+      console.log(response.data)
+      const friends = response.data
+      console.log(friends)
 
 
+      friends.forEach(data => {
+        axios.get(`https://api.github.com/users/${data.login}`)
+          .then(info => {
+            const arrayData = info.data
+            const friendCard = gitHubCard(arrayData)
+            entryPoint.appendChild(friendCard)
+      })
+    })
+  })
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
@@ -95,11 +104,14 @@ const followers = document.createElement('p')
 const following = document.createElement('p')
 const bio = document.createElement('p')
 
+
 //structure
 entryPoint.append(card)
 card.append(cardImg, cardInfo)
 cardInfo.append(name, userName, location, profile, followers, following, bio)
 profile.append(proLink)
+
+
 //data
 cardImg.src = data.avatar_url
 name.textContent = data.name
@@ -111,10 +123,14 @@ followers.textContent = `Followers: ${data.followers}`
 following.textContent = `Following: ${data.following}`
 bio.textContent = `Bio: ${data.bio}`
 
+
 card.classList.add('card')
 cardInfo.classList.add('card-info')
 name.classList.add('name')
 userName.classList.add('username')
+cal.classList.add('calendar')
+
+
 
 return gitHubCard
 }
